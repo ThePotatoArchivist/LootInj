@@ -1,0 +1,16 @@
+{
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "targets": [
+    "minecraft:chests/bastion_bridge"
+  ]
+}

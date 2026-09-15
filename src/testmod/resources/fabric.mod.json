@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "lootinjtest",
+  "version": "1.0.0",
+  "name": "LootInj Test",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/lootinj/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "archives.tater.lootinj.test.LootInjTestDataGenerator"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*",
+    "lootinj": "*"
+  }
+}
