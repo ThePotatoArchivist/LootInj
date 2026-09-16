@@ -27,7 +27,7 @@ public class LootInjImpl implements ModInitializer {
     // That way, it's clear which mod wrote info, warnings, and errors.
     public static final Logger LOGGER = LoggerFactory.getLogger(LootInj.MOD_ID);
 
-    private static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
+    public static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
     public static final Codec<List<ResourceKey<LootTable>>> TARGETS_CODEC = TARGETS_MAP_CODEC.codec();
 
     public static final LootModificationTargetsManager targetsLoader = new LootModificationTargetsManager();
