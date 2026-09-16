@@ -3,7 +3,6 @@ package archives.tater.lootinj.impl;
 import archives.tater.lootinj.api.LootModification;
 import archives.tater.lootinj.api.LootPoolPatch;
 
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -18,7 +17,7 @@ import java.util.Optional;
 public class LootModificationBuilderImpl implements LootModification.Builder {
     private final ImmutableList.Builder<ResourceKey<LootTable>> targets = ImmutableList.builder();
     private final ImmutableList.Builder<LootPool> pools = ImmutableList.builder();
-    private final ImmutableList.Builder<Holder<LootItemFunction>> functions = ImmutableList.builder();
+    private final ImmutableList.Builder<LootItemFunction> functions = ImmutableList.builder();
     private @Nullable LootPoolPatch modifyPools = null;
 
     @Override
@@ -46,7 +45,7 @@ public class LootModificationBuilderImpl implements LootModification.Builder {
     }
 
     @Override
-    public LootModification.Builder apply(Holder<LootItemFunction> function) {
+    public LootModification.Builder apply(LootItemFunction function) {
         functions.add(function);
         return this;
     }

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 
 public class LootInjTestDataGenerator implements DataGeneratorEntrypoint {
     @Override
-    public void buildReloadableRegistry(RegistrySetBuilder registryBuilder) {
+    public void buildRegistry(RegistrySetBuilder registryBuilder) {
         registryBuilder.add(Registries.PREDICATE, LootModificationProvider::bootstrap);
     }
 

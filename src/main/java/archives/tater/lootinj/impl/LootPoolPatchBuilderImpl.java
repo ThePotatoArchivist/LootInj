@@ -11,8 +11,8 @@ import com.google.common.collect.ImmutableList;
 
 public class LootPoolPatchBuilderImpl implements LootPoolPatch.Builder {
     private final ImmutableList.Builder<LootPoolEntryContainer> entries = ImmutableList.builder();
-    private final ImmutableList.Builder<Holder<LootItemCondition>> conditions = ImmutableList.builder();
-    private final ImmutableList.Builder<Holder<LootItemFunction>> functions = ImmutableList.builder();
+    private final ImmutableList.Builder<LootItemCondition> conditions = ImmutableList.builder();
+    private final ImmutableList.Builder<LootItemFunction> functions = ImmutableList.builder();
 
     @Override
     public LootPoolPatch.Builder add(LootPoolEntryContainer entry) {
@@ -21,13 +21,13 @@ public class LootPoolPatchBuilderImpl implements LootPoolPatch.Builder {
     }
 
     @Override
-    public LootPoolPatch.Builder when(Holder<LootItemCondition> condition) {
+    public LootPoolPatch.Builder when(LootItemCondition condition) {
         conditions.add(condition);
         return this;
     }
 
     @Override
-    public LootPoolPatch.Builder apply(Holder<LootItemFunction> function) {
+    public LootPoolPatch.Builder apply(LootItemFunction function) {
         functions.add(function);
         return this;
     }

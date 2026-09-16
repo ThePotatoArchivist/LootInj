@@ -6,6 +6,7 @@ import archives.tater.lootinj.api.LootModification;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -18,11 +19,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import static net.minecraft.advancements.predicates.ItemPredicate.Builder.item;
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
 import static net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem;
+import static net.minecraft.world.level.storage.loot.predicates.ConditionReference.conditionReference;
 import static net.minecraft.world.level.storage.loot.predicates.MatchTool.toolMatches;
 
 public class LootModificationProvider extends FabricDynamicRegistryProvider {
@@ -38,7 +39,7 @@ public class LootModificationProvider extends FabricDynamicRegistryProvider {
                 .target(Blocks.DIRT.getLootTable().orElseThrow())
                 .pool(lootPool()
                         .add(lootTableItem(Items.DIAMOND))
-                        .when(registries.getOrThrow(A)))
+                        .when(conditionReference(A)))
                 .build()
         );
     }
@@ -46,18 +47,13 @@ public class LootModificationProvider extends FabricDynamicRegistryProvider {
     private static BootstrapContext<LootItemCondition> entriesContext(Entries entries) {
         return new BootstrapContext<>() {
             @Override
-            public Holder.Reference<LootItemCondition> register(ResourceKey<LootItemCondition> key, LootItemCondition value) {
+            public Holder.Reference<LootItemCondition> register(ResourceKey<LootItemCondition> key, LootItemCondition value, Lifecycle lifecycle) {
                 return (Holder.Reference<LootItemCondition>) entries.add(key, value);
             }
 
             @Override
             public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
                 return entries.getLookups().lookupOrThrow(key);
-            }
-
-            @Override
-            public <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {
-                return entries.getLookups().lookupOrThrow(key).listElements();
             }
         };
     }
