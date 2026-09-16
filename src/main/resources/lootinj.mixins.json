@@ -3,9 +3,7 @@
   "package": "archives.tater.lootinj.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "LootDataTypeMixin",
-    "ReloadableServerResourcesMixin",
-    "ReloadableServerRegistriesMixin"
+    "ReloadableServerResourcesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,14 +1,13 @@
 {
   "pools": [
     {
-      "condition": "lootinj:a",
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond"
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     }
   ],
   "targets": "minecraft:blocks/dirt"

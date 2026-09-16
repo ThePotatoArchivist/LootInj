@@ -19,23 +19,23 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.*;
 
-public class LootModificationTargetsManager extends SimpleJsonResourceReloadListener<List<ResourceKey<LootTable>>> {
+public class LootModificationTargetsManager extends SimpleJsonResourceReloadListener<LootModification> {
 
-    private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<ResourceKey<LootModification>>> byTarget = Map.of();
+    private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<LootModification>> byTarget = Map.of();
 
     protected LootModificationTargetsManager() {
-        super(LootModification.TARGETS_CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
+        super(LootModification.CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
     }
 
-    public List<ResourceKey<LootModification>> getModifications(ResourceKey<LootTable> table) {
+    public List<LootModification> getModifications(ResourceKey<LootTable> table) {
         return byTarget.getOrDefault(table, List.of());
     }
 
     @Override
-    protected void apply(Map<Identifier, List<ResourceKey<LootTable>>> preparations, ResourceManager manager, ProfilerFiller profiler) {
-        byTarget = preparations.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(target -> Pair.of(target, ResourceKey.create(LootInj.LOOT_MODIFICATION, entry.getKey())))
+    protected void apply(Map<Identifier, LootModification> preparations, ResourceManager manager, ProfilerFiller profiler) {
+        byTarget = preparations.values().stream()
+                .flatMap(modification -> modification.targets().stream()
+                        .map(target -> Pair.of(target, modification))
                 )
                 .collect(groupingBy(Pair::key, mapping(Pair::value, toUnmodifiableList())));
     }
