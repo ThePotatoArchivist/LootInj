@@ -13,6 +13,4 @@ public final class LootInj {
 	}
 
 	public static final ResourceKey<Registry<LootModification>> LOOT_MODIFICATION = ResourceKey.createRegistryKey(id("loot_modification"));
-
-	public static final Identifier LOOT_MODIFICATION_TARGETS_LISTENER = id("loot_modification_targets");
 }
