@@ -20,7 +20,7 @@ public class LootInjImpl implements ModInitializer {
     // That way, it's clear which mod wrote info, warnings, and errors.
     public static final Logger LOGGER = LoggerFactory.getLogger(LootInj.MOD_ID);
 
-    private static final LootModificationTargetsLoader targetsLoader = new LootModificationTargetsLoader();
+    private static final LootModificationTargetsManager targetsLoader = new LootModificationTargetsManager();
 
     @Override
     public void onInitialize() {

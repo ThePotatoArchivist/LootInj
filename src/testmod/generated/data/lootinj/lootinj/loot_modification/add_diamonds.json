@@ -1,4 +1,12 @@
 {
+  "modify_pools": {
+    "entries": [
+      {
+        "type": "minecraft:item",
+        "name": "minecraft:stone"
+      }
+    ]
+  },
   "pools": [
     {
       "entries": [

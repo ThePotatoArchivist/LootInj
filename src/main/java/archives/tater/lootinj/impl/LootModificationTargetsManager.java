@@ -19,11 +19,11 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.*;
 
-public class LootModificationTargetsLoader extends SimpleJsonResourceReloadListener<List<ResourceKey<LootTable>>> {
+public class LootModificationTargetsManager extends SimpleJsonResourceReloadListener<List<ResourceKey<LootTable>>> {
 
     private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<ResourceKey<LootModification>>> byTarget = Map.of();
 
-    protected LootModificationTargetsLoader() {
+    protected LootModificationTargetsManager() {
         super(LootModification.TARGETS_CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
     }
 

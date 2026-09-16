@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
@@ -25,18 +23,14 @@ public class LootModificationProvider extends FabricDynamicRegistryProvider {
 
     @Override
     protected void configure(HolderLookup.Provider registries, Entries entries) {
-        entries.add(ResourceKey.create(LootInj.LOOT_MODIFICATION, LootInj.id("add_diamonds")), new LootModification(
-                List.of(
-                        BuiltInLootTables.BASTION_BRIDGE
-                ),
-                List.of(
-                        lootPool()
-                                .add(lootTableItem(Items.DIAMOND))
-                                .build()
-                ),
-                List.of(),
-                Optional.empty()
-        ));
+        entries.add(ResourceKey.create(LootInj.LOOT_MODIFICATION, LootInj.id("add_diamonds")), LootModification.builder()
+                .target(BuiltInLootTables.BASTION_BRIDGE)
+                .pool(lootPool()
+                        .add(lootTableItem(Items.DIAMOND)))
+                .modifyPools(builder -> builder
+                        .add(lootTableItem(Items.STONE)))
+                .build()
+        );
     }
 
     @Override
