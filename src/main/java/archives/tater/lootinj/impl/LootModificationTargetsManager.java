@@ -24,7 +24,7 @@ public class LootModificationTargetsManager extends SimpleJsonResourceReloadList
     private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<ResourceKey<LootModification>>> byTarget = Map.of();
 
     protected LootModificationTargetsManager() {
-        super(LootModification.TARGETS_CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
+        super(LootInjImpl.TARGETS_CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
     }
 
     public List<ResourceKey<LootModification>> getModifications(ResourceKey<LootTable> table) {
