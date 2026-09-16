@@ -3,15 +3,15 @@
 	"id": "lootinj",
 	"version": "${version}",
 	"name": "LootInj",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Simple data-driven loot table modification library",
 	"authors": [
-		"Me!"
+		"ThePotatoArchivist"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/ThePotatoArchivist/LootInj",
+		"sources": "https://github.com/ThePotatoArchivist/LootInj"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/lootinj/icon.png",
 	"environment": "*",
 	"entrypoints": {
