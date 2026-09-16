@@ -1,9 +1,9 @@
 package archives.tater.lootinj.api;
 
+import archives.tater.lootinj.impl.LootInjImpl;
 import archives.tater.lootinj.impl.LootModificationBuilderImpl;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -29,12 +29,9 @@ public record LootModification(
         List<LootItemFunction> functions,
         Optional<LootPoolPatch> modifyPools
 ) {
-    private static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
-
-    public static final Codec<List<ResourceKey<LootTable>>> TARGETS_CODEC = TARGETS_MAP_CODEC.codec();
 
     public static final Codec<LootModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            TARGETS_MAP_CODEC.forGetter(LootModification::targets),
+            LootInjImpl.TARGETS_MAP_CODEC.forGetter(LootModification::targets),
             LootPool.CODEC.listOf().optionalFieldOf("pools", List.of()).forGetter(LootModification::pools),
             compactListCodec(LootItemFunctions.ROOT_CODEC).optionalFieldOf("modifier", List.of()).forGetter(LootModification::functions),
             LootPoolPatch.CODEC.optionalFieldOf("modify_pools").forGetter(LootModification::modifyPools)
