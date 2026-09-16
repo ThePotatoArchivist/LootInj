@@ -10,8 +10,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.Validatable;
-import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
@@ -30,7 +28,7 @@ public record LootModification(
         List<LootPool> pools,
         List<LootItemFunction> functions,
         Optional<LootPoolPatch> modifyPools
-) implements Validatable {
+) {
     private static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
 
     public static final Codec<List<ResourceKey<LootTable>>> TARGETS_CODEC = TARGETS_MAP_CODEC.codec();
@@ -50,16 +48,6 @@ public record LootModification(
 
     public static Builder builder() {
         return new LootModificationBuilderImpl();
-    }
-
-    /**
-     * Does nothing
-     */
-    @ApiStatus.Internal
-    @Deprecated
-    @Override
-    public void validate(ValidationContext context) {
-
     }
 
     @ApiStatus.NonExtendable
