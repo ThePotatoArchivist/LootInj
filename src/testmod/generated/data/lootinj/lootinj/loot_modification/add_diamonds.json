@@ -1,14 +1,7 @@
 {
-  "modify_pools": {
-    "entries": [
-      {
-        "type": "minecraft:item",
-        "name": "minecraft:stone"
-      }
-    ]
-  },
   "pools": [
     {
+      "condition": "lootinj:a",
       "entries": [
         {
           "type": "minecraft:item",
@@ -18,7 +11,5 @@
       "rolls": 1
     }
   ],
-  "targets": [
-    "minecraft:chests/bastion_bridge"
-  ]
+  "targets": "minecraft:blocks/dirt"
 }
