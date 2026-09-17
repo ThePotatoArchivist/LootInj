@@ -40,7 +40,7 @@ public record LootModification(
 
     public void apply(LootTable.Builder builder) {
         builder.pools(pools);
-        builder.apply(functions, holder -> holder::value);
+        for (var function : functions) builder.apply(function);
         modifyPools.ifPresent(patch -> builder.modifyPools(patch::apply));
     }
 

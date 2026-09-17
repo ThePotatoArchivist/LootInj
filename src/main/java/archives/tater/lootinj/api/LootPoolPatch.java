@@ -35,8 +35,8 @@ public record LootPoolPatch(
 
     public void apply(LootPool.Builder builder) {
         builder.add(entries);
-        builder.when(conditions, holder -> holder::value);
-        builder.apply(functions, holder -> holder::value);
+        for (var condition : conditions) builder.when(condition);
+        for (var function : functions) builder.apply(function);
     }
 
     public static Builder builder() {
