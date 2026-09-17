@@ -8,6 +8,7 @@ LootInj is a simple data-driven loot modification library, primarily for mods. I
 - Supports data generation via `FabricDynamicRegistryProvider` (26.3+) or `FabricCodecDataProvider` (26.1-26.2)
   - Datagen matches the vanilla/FAPI `LootTable.Builder` and `LootPool.Builder` api
 - Can access other loot registries such as `minecraft:predicate`, `minecraft:item_modifier`, `minecraft:context_int_provider`, etc. (26.3+)
+- Can be reloaded without relogging using `/reload`
 
 ## Format
 
