@@ -151,11 +151,13 @@ The format generally follows the vanilla loot table format:
 
 I made this library because [Datapatched](https://modrinth.com/mod/datapatched) did not quite fit my needs:
 
-- I usually like to datagen as much as possible, and it does not work with data generation
+- I usually like to datagen as much as possible, and Datapatched does not work with data generation
 - I usually try to update my mods within a few days of a minecraft update, and Datapatched sometimes takes longer to update
 - I primarily mod for Fabric 26.1+ so this library will only support those versions
 
-If you are an end user who doesn't care about these and/or is on neoforge, Datapatched will probably work better for you as it is better documented and supports more versions & loaders.
+If you are an end user who doesn't care about these and/or is on Neoforge, Datapatched will probably work better for you as it is better documented and supports more versions & loaders. 
+
+---
 
 <details>
 
