@@ -1,6 +1,6 @@
 # LootInj
 
-LootInj is a simple data-driven loot modification library, primarily for mods. It essentially acts as a JSON frontend to the Fabric API `LootModification.MODIFY` event.
+LootInj is a simple data-driven loot modification library, primarily for mods. It essentially acts as a JSON frontend to the Fabric API `LootTableEvents.MODIFY` event.
 
 ## Features
 
