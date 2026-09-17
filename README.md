@@ -157,3 +157,30 @@ I made this library because [Datapatched](https://modrinth.com/mod/datapatched) 
 
 If you are an end user who doesn't care about these and/or is on neoforge, Datapatched will probably work better for you as it is better documented and supports more versions & loaders.
 
+<details>
+
+<summary>Developer Installation</summary>
+
+Modrinth maven is preferred, but the project is not yet approved on Modrinth. Until then, install and JiJ the mod from JitPack:
+
+```properties
+# gradle.properties
+lootinj_version=1.0.2+mc26.3
+```
+
+```groovy
+// build.gradle
+repositories {
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+}
+
+dependencies {
+    // ...
+    implementation include("com.github.ThePotatoArchivist:LootInj:${project.lootinj_version}")
+}
+```
+
+</details>
