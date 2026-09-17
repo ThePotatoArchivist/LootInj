@@ -19,8 +19,6 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.util.ExtraCodecs.compactListCodec;
-
 public record LootPoolPatch(
         List<LootPoolEntryContainer> entries,
         List<LootItemCondition> conditions,
@@ -28,8 +26,8 @@ public record LootPoolPatch(
 ) {
     public static final Codec<LootPoolPatch> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             LootPoolEntries.CODEC.listOf().optionalFieldOf("entries", List.of()).forGetter(LootPoolPatch::entries),
-            compactListCodec(LootItemCondition.DIRECT_CODEC).optionalFieldOf("condition", List.of()).forGetter(LootPoolPatch::conditions),
-            compactListCodec(LootItemFunctions.ROOT_CODEC).optionalFieldOf("modifier", List.of()).forGetter(LootPoolPatch::functions)
+            LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions", List.of()).forGetter(LootPoolPatch::conditions),
+            LootItemFunctions.ROOT_CODEC.listOf().optionalFieldOf("functions", List.of()).forGetter(LootPoolPatch::functions)
     ).apply(instance, LootPoolPatch::new));
 
     public void apply(LootPool.Builder builder) {

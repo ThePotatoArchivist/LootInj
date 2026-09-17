@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static net.minecraft.util.ExtraCodecs.compactListCodec;
-
 public record LootModification(
         List<ResourceKey<LootTable>> targets,
         List<LootPool> pools,
@@ -33,7 +31,7 @@ public record LootModification(
     public static final Codec<LootModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             LootInjImpl.TARGETS_MAP_CODEC.forGetter(LootModification::targets),
             LootPool.CODEC.listOf().optionalFieldOf("pools", List.of()).forGetter(LootModification::pools),
-            compactListCodec(LootItemFunctions.ROOT_CODEC).optionalFieldOf("modifier", List.of()).forGetter(LootModification::functions),
+            LootItemFunctions.ROOT_CODEC.listOf().optionalFieldOf("functions", List.of()).forGetter(LootModification::functions),
             LootPoolPatch.CODEC.optionalFieldOf("modify_pools").forGetter(LootModification::modifyPools)
     ).apply(instance, LootModification::new));
 

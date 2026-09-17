@@ -8,5 +8,6 @@ public class LootInjTestDataGenerator implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         var pack = fabricDataGenerator.createPack();
         pack.addProvider(LootModificationProvider::new);
+        pack.addProvider(TestLootProvider::new);
     }
 }

@@ -1,6 +1,31 @@
 {
+  "functions": [
+    {
+      "add": false,
+      "count": 1.0,
+      "function": "minecraft:set_count"
+    }
+  ],
+  "modify_pools": {
+    "conditions": [
+      {
+        "condition": "minecraft:match_tool",
+        "predicate": {
+          "items": "minecraft:diamond"
+        }
+      }
+    ],
+    "functions": [
+      {
+        "add": false,
+        "count": 1.0,
+        "function": "minecraft:set_count"
+      }
+    ]
+  },
   "pools": [
     {
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
