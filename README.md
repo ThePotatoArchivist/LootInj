@@ -168,7 +168,7 @@ Modrinth maven is preferred, but the project is not yet approved on Modrinth. Un
 
 ```properties
 # gradle.properties
-lootinj_version=1.0.1+mc26.3
+lootinj_version=1.0.3-mc26.3
 ```
 
 ```groovy
