@@ -43,7 +43,7 @@ The format generally follows the vanilla loot table format:
   ],
 
   // A loot function or list of functions to add to the whole table
-  "modifiers": {
+  "modifier": {
     "count": 2,
     "function": "minecraft:set_count"
   },
