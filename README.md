@@ -164,25 +164,32 @@ If you are an end user who doesn't care about these and/or is on Neoforge, Datap
 
 <summary>Developer Installation</summary>
 
-Modrinth maven is preferred, but the project is not yet approved on Modrinth. Until then, install and JiJ the mod from JitPack:
+For use in a mod, install and JiJ it from the Modrinth maven.
 
 ```properties
 # gradle.properties
-lootinj_version=1.0.3-mc26.3
+lootinj_version=1.0.3+mc26.1.2
 ```
 
 ```groovy
 // build.gradle
 repositories {
-    maven {
-        name = "JitPack"
-        url = "https://jitpack.io"
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
     }
 }
 
 dependencies {
     // ...
-    implementation include("com.github.ThePotatoArchivist:LootInj:${project.lootinj_version}")
+    implementation include("maven.modrinth:lootinj:${project.lootinj_version}")
 }
 ```
 
