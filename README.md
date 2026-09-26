@@ -168,7 +168,7 @@ For use in a mod, install and JiJ it from the Modrinth maven.
 
 ```properties
 # gradle.properties
-lootinj_version=1.0.2+mc26.3
+lootinj_version=1.0.3+mc26.3
 ```
 
 ```groovy
