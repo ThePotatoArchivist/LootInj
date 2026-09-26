@@ -1,17 +1,15 @@
 package archives.tater.lootinj.api;
 
 import archives.tater.lootinj.impl.LootPoolPatchBuilderImpl;
+import archives.tater.lootinj.impl.LootPoolPatchImpl;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntries;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.UniformContainerBase;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -20,31 +18,17 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.util.ExtraCodecs.compactListCodec;
+public interface LootPoolPatch {
+    Codec<LootPoolPatch> CODEC = LootPoolPatchImpl.CODEC;
 
-public record LootPoolPatch(
-        List<LootPoolEntryContainer> entries,
-        List<Holder<LootItemCondition>> conditions,
-        List<Holder<LootItemFunction>> functions
-) {
-    public static final Codec<LootPoolPatch> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            LootPoolEntries.CODEC.listOf().optionalFieldOf("entries", List.of()).forGetter(LootPoolPatch::entries),
-            compactListCodec(LootItemCondition.CODEC).optionalFieldOf("condition", List.of()).forGetter(LootPoolPatch::conditions),
-            compactListCodec(LootItemFunctions.CODEC).optionalFieldOf("modifier", List.of()).forGetter(LootPoolPatch::functions)
-    ).apply(instance, LootPoolPatch::new));
-
-    public void apply(LootPool.Builder builder) {
-        builder.add(entries);
-        for (var condition : conditions) builder.when(condition);
-        for (var function : functions) builder.apply(function);
-    }
-
-    public static Builder builder() {
+    static Builder builder() {
         return new LootPoolPatchBuilderImpl();
     }
 
+    void apply(LootPool.Builder builder);
+
     @ApiStatus.NonExtendable
-    public interface Builder extends FunctionUserBuilder<Builder>, ConditionUserBuilder<Builder> {
+    interface Builder extends FunctionUserBuilder<Builder>, ConditionUserBuilder<Builder> {
 
         Builder add(LootPoolEntryContainer entry);
 

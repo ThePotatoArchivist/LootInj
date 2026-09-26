@@ -60,6 +60,6 @@ public class LootModificationBuilderImpl implements LootModification.Builder {
 
     @Override
     public LootModification build() {
-        return new LootModification(targets.build(), pools.build(), functions.build(), Optional.ofNullable(modifyPools));
+        return new LootModificationImpl(targets.build(), pools.build(), functions.build(), Optional.ofNullable(modifyPools));
     }
 }

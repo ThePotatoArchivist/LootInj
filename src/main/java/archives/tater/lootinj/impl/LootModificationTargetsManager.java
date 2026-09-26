@@ -1,7 +1,6 @@
 package archives.tater.lootinj.impl;
 
 import archives.tater.lootinj.api.LootInj;
-import archives.tater.lootinj.api.LootModification;
 
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -21,13 +20,13 @@ import static java.util.stream.Collectors.*;
 
 public class LootModificationTargetsManager extends SimpleJsonResourceReloadListener<List<ResourceKey<LootTable>>> {
 
-    private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<ResourceKey<LootModification>>> byTarget = Map.of();
+    private @Unmodifiable Map<ResourceKey<LootTable>, @Unmodifiable List<ResourceKey<LootModificationImpl>>> byTarget = Map.of();
 
     protected LootModificationTargetsManager() {
         super(LootInjImpl.TARGETS_CODEC, FileToIdConverter.registry(LootInj.LOOT_MODIFICATION));
     }
 
-    public List<ResourceKey<LootModification>> getModifications(ResourceKey<LootTable> table) {
+    public List<ResourceKey<LootModificationImpl>> getModifications(ResourceKey<LootTable> table) {
         return byTarget.getOrDefault(table, List.of());
     }
 

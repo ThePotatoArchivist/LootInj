@@ -1,10 +1,9 @@
 package archives.tater.lootinj.api;
 
-import archives.tater.lootinj.impl.LootInjImpl;
 import archives.tater.lootinj.impl.LootModificationBuilderImpl;
+import archives.tater.lootinj.impl.LootModificationImpl;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -13,43 +12,25 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
-import static net.minecraft.util.ExtraCodecs.compactListCodec;
+@ApiStatus.NonExtendable
+public interface LootModification {
 
-public record LootModification(
-        List<ResourceKey<LootTable>> targets,
-        List<LootPool> pools,
-        List<Holder<LootItemFunction>> functions,
-        Optional<LootPoolPatch> modifyPools
-) {
+    Codec<LootModification> CODEC = LootModificationImpl.CODEC;
 
-    public static final Codec<LootModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            LootInjImpl.TARGETS_MAP_CODEC.forGetter(LootModification::targets),
-            LootPool.CODEC.listOf().optionalFieldOf("pools", List.of()).forGetter(LootModification::pools),
-            compactListCodec(LootItemFunctions.CODEC).optionalFieldOf("modifier", List.of()).forGetter(LootModification::functions),
-            LootPoolPatch.CODEC.optionalFieldOf("modify_pools").forGetter(LootModification::modifyPools)
-    ).apply(instance, LootModification::new));
+    void apply(LootTable.Builder builder);
 
-    public void apply(LootTable.Builder builder) {
-        builder.pools(pools);
-        for (var function : functions) builder.apply(function);
-        modifyPools.ifPresent(patch -> builder.modifyPools(patch::apply));
-    }
-
-    public static Builder builder() {
+    static Builder builder() {
         return new LootModificationBuilderImpl();
     }
 
     @ApiStatus.NonExtendable
-    public interface Builder extends FunctionUserBuilder<Builder> {
+    interface Builder extends FunctionUserBuilder<Builder> {
         Builder target(ResourceKey<LootTable> target);
 
         default Builder target(Identifier target) {
