@@ -34,6 +34,6 @@ public class LootPoolPatchBuilderImpl implements LootPoolPatch.Builder {
 
     @Override
     public LootPoolPatch build() {
-        return new LootPoolPatch(entries.build(), conditions.build(), functions.build());
+        return new LootPoolPatchImpl(entries.build(), conditions.build(), functions.build());
     }
 }

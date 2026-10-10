@@ -17,8 +17,8 @@ import java.util.Optional;
 
 public class LootModificationBuilderImpl implements LootModification.Builder {
     private final ImmutableList.Builder<ResourceKey<LootTable>> targets = ImmutableList.builder();
-    private final ImmutableList.Builder<LootPool> pools = ImmutableList.builder();
-    private final ImmutableList.Builder<Holder<LootItemFunction>> functions = ImmutableList.builder();
+    private final ImmutableList.Builder<DeferredDecode<LootPool>> pools = ImmutableList.builder();
+    private final ImmutableList.Builder<DeferredDecode<Holder<LootItemFunction>>> functions = ImmutableList.builder();
     private @Nullable LootPoolPatch modifyPools = null;
 
     @Override
@@ -35,19 +35,13 @@ public class LootModificationBuilderImpl implements LootModification.Builder {
 
     @Override
     public LootModification.Builder pool(LootPool pool) {
-        pools.add(pool);
-        return this;
-    }
-
-    @Override
-    public LootModification.Builder pools(Collection<? extends LootPool> pools) {
-        this.pools.addAll(pools);
+        pools.add(DeferredDecode.of(pool));
         return this;
     }
 
     @Override
     public LootModification.Builder apply(Holder<LootItemFunction> function) {
-        functions.add(function);
+        functions.add(DeferredDecode.of(function));
         return this;
     }
 
@@ -60,6 +54,6 @@ public class LootModificationBuilderImpl implements LootModification.Builder {
 
     @Override
     public LootModification build() {
-        return new LootModificationImpl(targets.build(), pools.build(), functions.build(), Optional.ofNullable(modifyPools));
+        return new LootModificationImpl(targets.build(), pools.build(), functions.build(), Optional.ofNullable(modifyPools).map(DeferredDecode.Constant::new));
     }
 }

@@ -42,7 +42,7 @@ public class LootInjImpl implements ModInitializer {
 
         LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
             for (var modificationKey : targetsLoader.getModifications(key))
-                holder.getOrThrow(modificationKey).value().apply(tableBuilder);
+                holder.getOrThrow(modificationKey).value().apply(tableBuilder, holder);
         });
     }
 

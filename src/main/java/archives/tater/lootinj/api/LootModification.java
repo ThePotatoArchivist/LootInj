@@ -5,6 +5,8 @@ import archives.tater.lootinj.impl.LootModificationImpl;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -16,14 +18,32 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @ApiStatus.NonExtendable
 public interface LootModification {
 
     Codec<LootModification> CODEC = LootModificationImpl.CODEC;
+    HolderLookup.Provider EMPTY_REGISTRIES = new HolderLookup.Provider() {
+        @Override
+        public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
+            return Stream.empty();
+        }
 
-    void apply(LootTable.Builder builder);
+        @Override
+        public <T> Optional<? extends HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
+            return Optional.empty();
+        }
+    };
+
+    void apply(LootTable.Builder builder, HolderLookup.Provider registries);
+
+    @Deprecated
+    default void apply(LootTable.Builder builder) {
+        apply(builder, EMPTY_REGISTRIES);
+    }
 
     static Builder builder() {
         return new LootModificationBuilderImpl();
@@ -56,7 +76,11 @@ public interface LootModification {
             return pool(pool);
         }
 
-        Builder pools(Collection<? extends LootPool> pools);
+        default Builder pools(Collection<? extends LootPool> pools) {
+            for (var pool : pools)
+                pool(pool);
+            return this;
+        }
 
         @Override
         Builder apply(Holder<LootItemFunction> function);
