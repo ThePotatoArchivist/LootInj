@@ -33,10 +33,9 @@ public sealed interface DeferredDecode<T> {
             public <T> DataResult<T> encode(DeferredDecode<A> input, DynamicOps<T> ops, T prefix) {
                 return switch (input) {
                     case Constant(var value) -> codec.encode(value, ops, prefix);
-                    case Deferred(var value, var containedCodec) -> {
-                        if (codec != containedCodec) throw new IllegalStateException("Codec contained by Deferred did not match");
-                        yield DataResult.success(value.convert(ops).getValue());
-                    }
+                    case Deferred(var value, var containedCodec) -> codec == containedCodec
+                            ? DataResult.success(value.convert(ops).getValue())
+                            : DataResult.error(() -> "Codec contained by Deferred did not match expected");
                 };
             }
         };
