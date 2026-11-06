@@ -40,15 +40,16 @@ public class LootInjImpl implements ModInitializer {
         ((HolderReferenceAccessor<T>) holder).callBindValue(newValue);
 
         var access = (MappedRegistryAccessor<T>) registry;
-        if (access.getByValue().remove(oldValue) != holder)
-            throw new IllegalStateException("Invalid");
+        if (access.getByValue().remove(oldValue) != holder) throw new IllegalStateException("Removed holder did not match!");
         access.getByValue().put(newValue, holder);
         access.getToId().put(newValue, access.getToId().removeInt(oldValue));
     }
 
     public static void finalizeLootTables(RegistryAccess registries) {
-        var lootTables = registries.lookupOrThrow(Registries.LOOT_TABLE);
-        if (!(lootTables instanceof MappedRegistry<LootTable> registry)) return;
+        if (!(registries.lookupOrThrow(Registries.LOOT_TABLE) instanceof MappedRegistry<LootTable> lootTables)) {
+            LOGGER.error("Unable to modify loot tables as minecraft:loot_table was not a MappedRegistry");
+            return;
+        }
 
         var builders = new HashMap<Holder.Reference<LootTable>, LootTable.Builder>();
 
@@ -63,7 +64,7 @@ public class LootInjImpl implements ModInitializer {
             }
 
         builders.forEach((holder, builder) ->
-                reassignHolder(registry, holder, builder.build())
+                reassignHolder(lootTables, holder, builder.build())
         );
     }
 
