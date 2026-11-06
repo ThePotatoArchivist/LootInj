@@ -9,7 +9,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
@@ -34,7 +33,6 @@ public class LootInjImpl implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(LootInj.MOD_ID);
 
     public static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
-    public static final Codec<List<ResourceKey<LootTable>>> TARGETS_CODEC = TARGETS_MAP_CODEC.codec();
 
     @SuppressWarnings("unchecked")
     public static <T> void reassignHolder(MappedRegistry<T> registry, Holder.Reference<T> holder, T newValue) {
@@ -52,27 +50,22 @@ public class LootInjImpl implements ModInitializer {
         var lootTables = registries.lookupOrThrow(Registries.LOOT_TABLE);
         if (!(lootTables instanceof MappedRegistry<LootTable> registry)) return;
 
-        var pendingTables = new HashMap<ResourceKey<LootTable>, PendingTable>();
+        var builders = new HashMap<Holder.Reference<LootTable>, LootTable.Builder>();
 
         for (var modification : registries.lookupOrThrow(LootInj.LOOT_MODIFICATION))
             for (var key : modification.targets()) {
+                var holder = lootTables.get(key).orElse(null);
+                if (holder == null) continue;
 
-                var entry = pendingTables.computeIfAbsent(key, key1 -> {
-                    var holder = lootTables.get(key1).orElse(null);
-                    if (holder == null) return null;
-                    return new PendingTable(holder, FabricLootTableBuilder.copyOf(holder.value()));
-                });
+                var builder = builders.computeIfAbsent(holder, holder1 -> FabricLootTableBuilder.copyOf(holder1.value()));
 
-                if (entry == null) continue;
-
-                modification.apply(entry.builder);
+                modification.apply(builder);
             }
 
-        for (var table : pendingTables.values())
-            reassignHolder(registry, table.holder, table.builder.build());
+        builders.forEach((holder, builder) ->
+                reassignHolder(registry, holder, builder.build())
+        );
     }
-
-    record PendingTable(Holder.Reference<LootTable> holder, LootTable.Builder builder) {}
 
     @Override
     public void onInitialize() {
