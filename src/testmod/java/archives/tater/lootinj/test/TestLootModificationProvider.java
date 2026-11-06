@@ -20,13 +20,15 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+import static archives.tater.lootinj.test.LootInjTestDataGenerator.createRef;
 import static net.minecraft.advancements.predicates.ItemPredicate.Builder.item;
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
 import static net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem;
+import static net.minecraft.world.level.storage.loot.entries.NestedLootTable.lootTableReference;
 import static net.minecraft.world.level.storage.loot.predicates.MatchTool.toolMatches;
 
-public class LootModificationProvider extends FabricDynamicRegistryProvider {
-    public LootModificationProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+public class TestLootModificationProvider extends FabricDynamicRegistryProvider {
+    public TestLootModificationProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
@@ -39,6 +41,13 @@ public class LootModificationProvider extends FabricDynamicRegistryProvider {
                 .pool(lootPool()
                         .add(lootTableItem(Items.DIAMOND))
                         .when(registries.getOrThrow(A)))
+                .build()
+        );
+
+        entries.add(ResourceKey.create(LootInj.LOOT_MODIFICATION, LootInj.id("merge_hay")), LootModification.builder()
+                .target(Blocks.HAY_BLOCK.getLootTable().orElseThrow())
+                .pool(lootPool()
+                        .add(lootTableReference(createRef(registries.lookupOrThrow(Registries.LOOT_TABLE), Blocks.DIRT.getLootTable().orElseThrow()))))
                 .build()
         );
     }

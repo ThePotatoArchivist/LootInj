@@ -1,0 +1,14 @@
+{
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:blocks/dirt"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "targets": "minecraft:blocks/hay_block"
+}
