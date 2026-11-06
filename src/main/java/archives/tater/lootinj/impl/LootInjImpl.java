@@ -2,22 +2,29 @@ package archives.tater.lootinj.impl;
 
 import archives.tater.lootinj.api.LootInj;
 import archives.tater.lootinj.api.LootModification;
+import archives.tater.lootinj.mixin.HolderReferenceAccessor;
+import archives.tater.lootinj.mixin.MappedRegistryAccessor;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 
+import it.unimi.dsi.fastutil.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.*;
 import static net.minecraft.util.ExtraCodecs.compactListCodec;
 
 public class LootInjImpl implements ModInitializer {
@@ -30,7 +37,37 @@ public class LootInjImpl implements ModInitializer {
     public static final MapCodec<List<ResourceKey<LootTable>>> TARGETS_MAP_CODEC = compactListCodec(ResourceKey.codec(Registries.LOOT_TABLE), ResourceKey.codec(Registries.LOOT_TABLE).listOf(1, Integer.MAX_VALUE)).fieldOf("targets");
     public static final Codec<List<ResourceKey<LootTable>>> TARGETS_CODEC = TARGETS_MAP_CODEC.codec();
 
-    public static final LootModificationTargetsManager targetsLoader = new LootModificationTargetsManager();
+    @SuppressWarnings("unchecked")
+    public static <T> void reassignHolder(MappedRegistry<T> registry, Holder.Reference<T> holder, T newValue) {
+        var oldValue = holder.value();
+        ((HolderReferenceAccessor<T>) holder).callBindValue(newValue);
+
+        var access = (MappedRegistryAccessor<T>) registry;
+        if (access.getByValue().remove(oldValue) != holder)
+            throw new IllegalStateException("Invalid");
+        access.getByValue().put(newValue, holder);
+        access.getToId().put(newValue, access.getToId().removeInt(oldValue));
+    }
+
+    public static void finalizeLootTables(RegistryAccess registries) {
+        var lootTables = registries.lookupOrThrow(Registries.LOOT_TABLE);
+        if (!(lootTables instanceof MappedRegistry<LootTable> registry)) return;
+
+        var modificationsByKey = registries.lookupOrThrow(LootInj.LOOT_MODIFICATION).stream()
+                .flatMap(modification -> modification.targets().stream().map(target -> Pair.of(target, modification)))
+                .collect(groupingBy(Pair::key, mapping(Pair::value, toUnmodifiableList())));
+
+        for (var entry : modificationsByKey.entrySet()) {
+            var key = entry.getKey();
+            if (!(lootTables.get(key).orElse(null) instanceof Holder.Reference<LootTable> holder)) return;
+            var oldTable = holder.value();
+            var builder = FabricLootTableBuilder.copyOf(oldTable);
+            for (var modifier : entry.getValue())
+                modifier.apply(builder);
+            var modifiedTable = builder.build();
+            reassignHolder(registry, holder, modifiedTable);
+        }
+    }
 
     @Override
     public void onInitialize() {
@@ -39,11 +76,6 @@ public class LootInjImpl implements ModInitializer {
         // Proceed with mild caution.
 
         DynamicRegistries.registerReloadable(LootInj.LOOT_MODIFICATION, LootModification.CODEC);
-
-        LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
-            for (var modificationKey : targetsLoader.getModifications(key))
-                holder.getOrThrow(modificationKey).value().apply(tableBuilder);
-        });
     }
 
 }
